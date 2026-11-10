@@ -1,0 +1,496 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allu's Magical Birthday 💜</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ font-family:Georgia,serif;color:white;min-height:100vh;
+ overflow-x:hidden;transition:background 1s;
+}
+.scene{
+ display:none;min-height:100vh;padding:45px 15px 180px;
+ text-align:center;align-items:center;justify-content:center;
+ flex-direction:column;position:relative;z-index:2;
+ animation:appear .7s ease;
+}
+.scene.active{display:flex}
+@keyframes appear{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:clamp(35px,7vw,65px);margin:15px;text-shadow:0 5px 20px #0005}
+h2{margin:12px}
+p{max-width:650px;line-height:1.8;font-size:17px;margin:12px auto}
+.card{
+ width:min(650px,95%);padding:28px 20px;
+ border:1px solid #ffffff70;background:#ffffff22;
+ border-radius:25px;backdrop-filter:blur(14px);
+ box-shadow:0 15px 45px #0004;
+}
+button{
+ padding:13px 24px;margin:12px;border:1px solid #ffffff99;
+ border-radius:30px;background:#ffffff25;color:white;
+ font-size:16px;cursor:pointer;transition:.3s;
+}
+button:hover{background:white;color:#583d7a;transform:translateY(-3px)}
+input{padding:13px;border-radius:25px;border:0;font-size:17px;text-align:center;margin:15px;max-width:90%}
+.emoji{font-size:65px;margin:15px}
+#message{min-height:25px;color:#ffe2f4}
+.gallery{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:20px}
+.gallery img{width:125px;height:125px;object-fit:cover;border-radius:18px;border:2px solid white}
+
+/* DIFFERENT BACKGROUNDS */
+body[data-scene="0"]{background:linear-gradient(160deg,#090b30,#39236e,#a45eaa)}
+body[data-scene="1"]{background:linear-gradient(160deg,#f58dbb,#a84e91,#51366f)}
+body[data-scene="2"]{background:linear-gradient(160deg,#062c39,#126b72,#70b9a5)}
+body[data-scene="3"]{background:linear-gradient(160deg,#160b38,#56328d,#bd8de1)}
+body[data-scene="4"]{background:linear-gradient(160deg,#050d2d,#172c67,#526eae)}
+body[data-scene="5"]{background:linear-gradient(160deg,#603b27,#b77c48,#f2c98d)}
+body[data-scene="6"]{background:linear-gradient(160deg,#252044,#67527e,#c19acb)}
+body[data-scene="7"]{background:linear-gradient(160deg,#441a52,#a34d87,#f2a4c8)}
+body[data-scene="8"]{background:linear-gradient(160deg,#17194d,#6040a0,#d477b2)}
+body[data-scene="9"]{background:linear-gradient(160deg,#a64c9b,#ed8bb5,#6d9bd2)}
+
+/* BACKGROUND MAGIC */
+#world{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.star{position:absolute;color:#fff5c7;text-shadow:0 0 12px white;animation:twinkle var(--speed) infinite ease-in-out}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1.4)}}
+.cloud{position:absolute;width:180px;height:45px;border-radius:50px;background:#ffffff30;filter:blur(2px);animation:cloud 35s linear infinite}
+@keyframes cloud{from{transform:translateX(-250px)}to{transform:translateX(120vw)}}
+.bubble-bg{position:absolute;width:10px;height:10px;border-radius:50%;background:#fff5c9;box-shadow:0 0 20px 5px #fff4;animation:rise 9s linear infinite}
+@keyframes rise{from{transform:translateY(110vh);opacity:0}20%{opacity:1}to{transform:translateY(-20vh);opacity:0}}
+
+/* SCENE ILLUSTRATIONS */
+.art{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+.art span{position:absolute}
+.moon{width:90px;height:90px;border-radius:50%;right:12%;top:10%;background:radial-gradient(circle at 35% 35%,white,#ffe9ae 65%,#e6b8ff);box-shadow:0 0 60px #fff5b9}
+.hill{bottom:-100px;width:120%;height:230px;border-radius:50% 50% 0 0;background:#173e49;left:-10%}
+.hill.two{bottom:-145px;background:#245b59;left:15%}
+.tree{bottom:75px;font-size:100px;filter:drop-shadow(0 5px 10px #0004)}
+.castle{bottom:60px;left:50%;transform:translateX(-50%);width:230px;height:150px;background:#bba1e9;border:5px solid #e8d5ff;border-radius:12px 12px 0 0;box-shadow:0 0 40px #f5d5ff88}
+.castle:before{content:"";position:absolute;left:70px;top:-75px;width:80px;height:75px;background:#d6c0f5;clip-path:polygon(0 100%,0 35%,50% 0,100% 35%,100% 100%)}
+.tower{position:absolute;bottom:60px;width:55px;height:125px;background:#d6c0f5;border:4px solid #f5e5ff}
+.tower:before{content:"";position:absolute;top:-45px;left:-4px;width:55px;height:45px;background:#a987d4;clip-path:polygon(0 100%,50% 0,100% 100%)}
+.tower.left{left:calc(50% - 140px)}.tower.right{left:calc(50% + 85px)}
+.window{position:absolute;bottom:35px;left:30px;width:25px;height:35px;border-radius:50% 50% 0 0;background:#ffe8a0;box-shadow:0 0 15px #ffe8a0}
+.planet{width:100px;height:100px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#f8c6ff,#8b74d5,#344e9a);top:25%;left:12%;box-shadow:0 0 35px #c5b7ff}
+.ring{width:160px;height:50px;border:7px solid #f6d6ff;border-radius:50%;top:31%;left:8%;transform:rotate(-25deg)}
+.rose{bottom:40px;font-size:55px}
+.frame{width:90px;height:120px;border:7px solid #ffe3b6;border-radius:12px;bottom:45px;background:#ffffff25;box-shadow:0 0 20px #ffe8c8}
+.frame.one{left:18%}.frame.two{left:42%;bottom:75px}.frame.three{right:18%}
+.giftbox{bottom:45px;left:50%;transform:translateX(-50%);width:150px;height:115px;background:#e94e9a;border:5px solid #ffd2ed;border-radius:12px;box-shadow:0 0 35px #ffacd9}
+.giftbox:before{content:"";position:absolute;left:60px;top:-20px;width:25px;height:130px;background:#ffe58c}
+.giftbox:after{content:"🎀";position:absolute;top:-58px;left:42px;font-size:65px}
+.balloon{font-size:65px;bottom:70px}
+.balloon.a{left:12%}.balloon.b{right:12%}
+.rainbow{width:320px;height:160px;left:50%;top:20%;transform:translateX(-50%);border:18px solid #ffb4d7;border-bottom:0;border-radius:180px 180px 0 0;box-shadow:inset 0 12px #ffe8a0,0 0 0 12px #a8caff}
+
+/* LUMI DRAGON */
+#lumi{
+ position:fixed;z-index:1000;left:25px;bottom:12px;
+ width:145px;height:155px;cursor:grab;
+ touch-action:none;user-select:none;-webkit-user-select:none;
+ filter:drop-shadow(0 9px 10px #160b3455);
+ transition:left 1s,bottom 1s;
+}
+#lumi.dragging{cursor:grabbing;z-index:3000;animation:none!important;transition:none!important;filter:drop-shadow(0 18px 18px #160b3477)}
+#lumi .body{position:absolute;width:92px;height:75px;left:28px;bottom:8px;border-radius:48%;background:linear-gradient(145deg,#fff2ff,#b995ed);box-shadow:inset -8px -8px 15px #8960bb55,inset 5px 5px 12px white}
+#lumi .head{position:absolute;width:91px;height:82px;left:29px;top:22px;border-radius:48%;background:linear-gradient(145deg,#fff2ff,#c9a5f6);box-shadow:inset -8px -7px 12px #9670ca55,inset 5px 5px 12px white;z-index:3}
+#lumi .horn{position:absolute;top:-15px;width:19px;height:29px;background:linear-gradient(#fff0ae,#ef9cc7);border-radius:70% 70% 15% 15%}
+#lumi .horn.left{left:15px;transform:rotate(-18deg)}
+#lumi .horn.right{right:15px;transform:rotate(18deg)}
+#lumi .eye{position:absolute;top:32px;width:13px;height:19px;background:radial-gradient(circle at 35% 25%,white 0 15%,#60d3ff 30%,#2860b9 80%);border-radius:50%;box-shadow:0 0 9px #8de3ff}
+#lumi .eye.left{left:21px}#lumi .eye.right{right:21px}
+#lumi .cheek{position:absolute;top:53px;width:17px;height:9px;border-radius:50%;background:#ff9ecb}
+#lumi .cheek.left{left:8px}#lumi .cheek.right{right:8px}
+#lumi .smile{position:absolute;top:61px;left:38px;width:16px;height:9px;border-bottom:2px solid #86537f;border-radius:50%}
+#lumi .wing{position:absolute;top:72px;width:39px;height:49px;background:linear-gradient(135deg,#ffc7ed,#e5a8ff);border:2px solid #fff9;border-radius:80% 15% 80% 20%;transform-origin:bottom center;z-index:1}
+#lumi .wing.left{left:3px;transform:rotate(-25deg)}
+#lumi .wing.right{right:3px;transform:scaleX(-1) rotate(-25deg)}
+#lumi .leg{position:absolute;bottom:0;width:25px;height:21px;border-radius:50%;background:#b58be8;z-index:4}
+#lumi .leg.left{left:43px}#lumi .leg.right{right:43px}
+#lumi .tail{position:absolute;bottom:25px;right:0;width:39px;height:25px;border:9px solid #c6a0f3;border-left:0;border-bottom:0;border-radius:0 90% 0 0;transform:rotate(25deg)}
+#lumi .bow{position:absolute;top:11px;left:63px;z-index:5;font-size:23px;transform:rotate(-15deg)}
+#lumi .bubble{position:absolute;bottom:157px;left:-12px;padding:10px 13px;border-radius:17px 17px 17px 4px;background:white;color:#754c91;font:13px Arial;font-weight:bold;width:max-content;max-width:230px;box-shadow:0 5px 15px #0003}
+#lumi .wave-hand{position:absolute;right:-5px;top:43px;z-index:8;font-size:31px;opacity:0;transform:rotate(-25deg) scale(.5);transform-origin:bottom center;pointer-events:none}
+#lumi.waving .wave-hand{opacity:1;animation:handWave .32s ease-in-out 7 alternate}
+@keyframes handWave{from{transform:rotate(-35deg) scale(1)}to{transform:rotate(35deg) scale(1)}}
+#lumi.floating{animation:float 2.5s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-12px)}}
+#lumi.flying{animation:fly .6s ease-in-out infinite alternate}
+@keyframes fly{to{transform:translateY(-15px) rotate(6deg)}}
+#lumi.jumping{animation:jump .7s ease}
+@keyframes jump{45%{transform:translateY(-55px) rotate(12deg)}}
+#lumi.flying .wing{animation:flap .2s infinite alternate}
+@keyframes flap{to{transform:rotate(35deg)}}
+@media(max-width:500px){#lumi{transform:scale(.85);transform-origin:bottom left}.scene{padding-bottom:160px}}
+</style>
+</head>
+
+<body data-scene="0">
+
+<div id="world"></div>
+<div class="art" id="art"><span class="moon"></span></div>
+
+<div id="lumi" class="floating">
+ <div class="bubble" id="lumiBubble">Hiiii! Mera naam Lumi hai! 💜</div>
+ <div class="tail"></div>
+ <div class="wing left"></div><div class="wing right"></div>
+ <div class="body"></div>
+ <div class="leg left"></div><div class="leg right"></div>
+ <div class="head">
+  <div class="horn left"></div><div class="horn right"></div>
+  <div class="eye left"></div><div class="eye right"></div>
+  <div class="cheek left"></div><div class="cheek right"></div>
+  <div class="smile"></div>
+ </div>
+ <div class="wave-hand">👋</div>
+ <div class="bow">🎀</div>
+</div>
+
+<section class="scene active" id="s0">
+ <div class="emoji">🌙✨</div>
+ <div class="card">
+  <h1>Secret Birthday World</h1>
+  <p>A magical surprise is waiting for Allu...</p>
+  <h2>Enter Secret Password</h2>
+  <input id="password" type="password" placeholder="Enter password">
+  <br><button onclick="unlock()">Unlock Magic 🔐</button>
+  <p id="message"></p>
+ </div>
+</section>
+
+<section class="scene" id="s1">
+ <div class="emoji">🌸🦋🌷</div>
+ <h1>Welcome Allu!</h1>
+ <div class="card"><p>Welcome to your own little magical world.</p><p>A special journey full of surprises is waiting for you! 💜</p></div>
+ <button onclick="go(2)">Start Adventure ✨</button>
+</section>
+
+<section class="scene" id="s2">
+ <div class="emoji">🌲🍄🧚</div><h1>The Enchanted Forest</h1>
+ <div class="card"><p>Look around! The trees are sparkling and the fairies are dancing.</p><p>Follow Lumi into the forest!</p></div>
+ <button onclick="go(3)">Follow Lumi 🐉</button>
+</section>
+
+<section class="scene" id="s3">
+ <div class="emoji">🏰✨</div><h1>The Dream Castle</h1>
+ <div class="card"><p>A beautiful surprise is waiting behind these magical doors.</p></div>
+ <button onclick="go(4)">Open Castle Door</button>
+</section>
+
+<section class="scene" id="s4">
+ <div class="emoji">⏳🌟</div><h1>Save the Date!</h1>
+ <div class="card"><h2>22 January 2027</h2><p id="countdown">Counting...</p></div>
+ <button onclick="go(5)">Continue 💜</button>
+</section>
+
+<section class="scene" id="s5">
+ <div class="emoji">💌🌹</div><h1>A Birthday Letter</h1>
+ <div class="card">
+  <p>Dear Allu,</p>
+  <p>May your life always be filled with happiness, beautiful memories and endless reasons to smile.</p>
+  <p>May all your dreams find their way to you.</p>
+  <p>Keep shining and stay magical! 💜</p>
+  <p>With lots of best wishes ✨</p>
+ </div>
+ <button onclick="go(6)">Next Surprise 🎁</button>
+</section>
+
+<section class="scene" id="s6">
+ <div class="emoji">📸💜</div><h1>Memory Gallery</h1>
+ <p>Add your favourite photos!</p>
+ <input type="file" accept="image/*" multiple onchange="addPhotos(event)">
+ <div class="gallery" id="gallery"></div>
+ <button onclick="go(7)">Next 🐉</button>
+</section>
+
+<section class="scene" id="s7">
+ <div class="emoji">🎁💝</div><h1>A Special Gift!</h1>
+ <div class="card">
+  <p>Lumi has brought something special for you.</p>
+  <button onclick="openGift()">Open Your Gift 💝</button>
+  <div id="giftMessage"></div>
+ </div>
+ <button onclick="go(8)">Continue 🎂</button>
+</section>
+
+<section class="scene" id="s8">
+ <div class="emoji">🎂🎉</div><h1>Happy Birthday Allu!</h1>
+ <div class="card">
+  <p>Make a beautiful wish!</p>
+  <button onclick="celebrate()">Make a Wish ✨</button>
+  <div id="cakeMessage"></div>
+ </div>
+ <button onclick="go(9)">Final Surprise 🌈</button>
+</section>
+
+<section class="scene" id="s9">
+ <div class="emoji">🌈💜✨</div><h1>Happy Birthday!</h1>
+ <div class="card">
+  <p>May your world always be full of magic, laughter and beautiful memories.</p>
+  <h2>22 • 01 • 2027</h2><p>Keep smiling, Allu! 💜</p>
+ </div>
+ <button onclick="go(0)">Replay the Magic ↻</button>
+</section>
+
+<script>
+const lumi=document.getElementById("lumi");
+const bubble=document.getElementById("lumiBubble");
+const art=document.getElementById("art");
+
+const pageDialogues=[
+ "Hiiii! Mera naam Lumi hai! Main tumhari magical friend hoon! 💜",
+ "Welcome Allu! Chalo ek magical journey shuru karte hain!",
+ "Wowww! Kitna pyara forest hai! Mere peeche aao! 🌲",
+ "Yayyy! Hum castle pohanch gaye! 🏰",
+ "Allu ka birthday aane wala hai! Main bohat excited hoon! 🎂",
+ "Maine tumhare liye ek special letter rakha hai! 💌",
+ "Chalo Allu ki beautiful memories dekhte hain! 📸",
+ "Shhh! Maine ek gift chhupaya hai! 🎁",
+ "Yayyyy! Birthday cake! Wish maango! 🎂",
+ "Happy Birthday Allu! Main tumhari magical friend hoon! 💜"
+];
+
+const clickDialogues=[
+ "Mera naam Lumi hai! 🐉",
+ "Mujhe flying bohat pasand hai! ✨",
+ "Main ek little magical dragon hoon!",
+ "Tumhein mera bow kaisa laga? 🎀",
+ "Hehehe! Mujhe dobara click karo!",
+ "Chalo mere saath adventure par chalte hain!",
+ "Main Allu ki birthday friend hoon! 💜",
+ "Mere wings dekho! Flap flap! 🪽",
+ "Mujhe magical stars bohat pasand hain! ⭐"
+];
+
+const positions=["5%","25%","55%","75%","40%","8%","65%","80%","30%","55%"];
+let clickCount=0;
+let currentPage=0;
+
+function speak(text){bubble.textContent=text}
+
+function lumiTalk(){
+ speak(clickDialogues[clickCount%clickDialogues.length]);
+ clickCount++;
+ lumi.classList.remove("floating","flying","jumping");
+ void lumi.offsetWidth;
+ lumi.classList.add("jumping");
+ setTimeout(()=>{
+  lumi.classList.remove("jumping");
+  lumi.classList.add("floating");
+ },700);
+}
+
+/* DRAG LUMI: MOUSE + MOBILE TOUCH */
+let isDragging=false;
+let hasMoved=false;
+let startX=0,startY=0;
+let offsetX=0,offsetY=0;
+let waveTimer=null;
+
+lumi.addEventListener("pointerdown",function(e){
+ if(e.button!==undefined && e.button!==0)return;
+
+ isDragging=true;
+ hasMoved=false;
+
+ const rect=lumi.getBoundingClientRect();
+ offsetX=e.clientX-rect.left;
+ offsetY=e.clientY-rect.top;
+ startX=e.clientX;
+ startY=e.clientY;
+
+ lumi.classList.remove("floating","flying","jumping");
+ lumi.classList.add("dragging","waving");
+
+ speak("Hiiii! Mujhe utha liya! 👋");
+ try{lumi.setPointerCapture(e.pointerId)}catch(err){}
+ e.preventDefault();
+});
+
+lumi.addEventListener("pointermove",function(e){
+ if(!isDragging)return;
+
+ if(Math.abs(e.clientX-startX)>5||Math.abs(e.clientY-startY)>5){
+  hasMoved=true;
+ }
+
+ const maxLeft=Math.max(0,window.innerWidth-lumi.offsetWidth);
+ const maxTop=Math.max(0,window.innerHeight-lumi.offsetHeight);
+ const left=Math.min(maxLeft,Math.max(0,e.clientX-offsetX));
+ const top=Math.min(maxTop,Math.max(0,e.clientY-offsetY));
+
+ lumi.style.left=left+"px";
+ lumi.style.top=top+"px";
+ lumi.style.bottom="auto";
+ e.preventDefault();
+});
+
+function releaseLumi(){
+ if(!isDragging)return;
+ isDragging=false;
+ lumi.classList.remove("dragging");
+
+ if(hasMoved){
+  speak("Yayyy! Main yahan baithungi! 👋💜");
+  lumi.classList.add("waving");
+  clearTimeout(waveTimer);
+  waveTimer=setTimeout(()=>{
+   lumi.classList.remove("waving");
+   lumi.classList.add("floating");
+  },2400);
+ }else{
+  lumi.classList.remove("waving");
+  lumi.classList.add("floating");
+  lumiTalk();
+ }
+}
+lumi.addEventListener("pointerup",releaseLumi);
+lumi.addEventListener("pointercancel",releaseLumi);
+
+function setSceneArt(n){
+ const scenes=[
+  '<span class="moon"></span>',
+  '<span class="hill" style="background:#9b527e"></span><span class="hill two" style="background:#d87da8"></span><span class="rose" style="left:12%">🌷</span><span class="rose" style="right:15%">🌸</span><span class="rose" style="left:48%">🌼</span>',
+  '<span class="hill"></span><span class="hill two"></span><span class="tree" style="left:5%">🌲</span><span class="tree" style="left:28%">🌳</span><span class="tree" style="right:8%">🌲</span><span class="tree" style="right:30%">🌳</span>',
+  '<span class="moon"></span><span class="castle"></span><span class="tower left"><i class="window"></i></span><span class="tower right"><i class="window"></i></span>',
+  '<span class="planet"></span><span class="ring"></span><span class="moon" style="width:45px;height:45px;right:18%;top:55%"></span>',
+  '<span class="hill" style="background:#714b35"></span><span class="hill two" style="background:#a8794e"></span><span class="rose" style="left:15%">🌹</span><span class="rose" style="right:15%">🌷</span>',
+  '<span class="frame one"></span><span class="frame two"></span><span class="frame three"></span>',
+  '<span class="giftbox"></span><span class="balloon a">🎈</span><span class="balloon b">🎈</span>',
+  '<span class="balloon a">🎈</span><span class="balloon b">🎈</span><span class="giftbox" style="background:#8d58d8"></span>',
+  '<span class="rainbow"></span><span class="balloon a">🎈</span><span class="balloon b">🎈</span>'
+ ];
+ art.innerHTML=scenes[n];
+}
+
+function makeMagic(){
+ const world=document.getElementById("world");
+ for(let i=0;i<45;i++){
+  const s=document.createElement("span");
+  s.className="star";
+  s.textContent=i%3===0?"✧":"✦";
+  s.style.left=Math.random()*100+"%";
+  s.style.top=Math.random()*100+"%";
+  s.style.fontSize=(10+Math.random()*18)+"px";
+  s.style.setProperty("--speed",(2+Math.random()*4)+"s");
+  world.appendChild(s);
+ }
+ for(let i=0;i<12;i++){
+  const c=document.createElement("span");
+  c.className="cloud";
+  c.style.top=(10+Math.random()*60)+"%";
+  c.style.animationDelay=(-Math.random()*35)+"s";
+  world.appendChild(c);
+ }
+ for(let i=0;i<20;i++){
+  const b=document.createElement("span");
+  b.className="bubble-bg";
+  b.style.left=Math.random()*100+"%";
+  b.style.animationDelay=(-Math.random()*9)+"s";
+  world.appendChild(b);
+ }
+}
+
+function go(n){
+ currentPage=n;
+ document.querySelectorAll(".scene").forEach(s=>s.classList.remove("active"));
+ document.getElementById("s"+n).classList.add("active");
+ document.body.dataset.scene=n;
+ setSceneArt(n);
+
+ lumi.classList.remove("floating","jumping","flying");
+ lumi.classList.add("flying");
+ lumi.style.left=positions[n];
+ lumi.style.bottom=n%2===0?"12px":"25px";
+ lumi.style.top="auto";
+ speak(pageDialogues[n]);
+
+ setTimeout(()=>{
+  lumi.classList.remove("flying");
+  lumi.classList.add("jumping");
+  setTimeout(()=>{
+   lumi.classList.remove("jumping");
+   lumi.classList.add("floating");
+  },700);
+ },1400);
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function unlock(){
+ const password=document.getElementById("password").value.trim();
+ const message=document.getElementById("message");
+ if(password==="0000"){
+  message.textContent="Correct! Welcome Allu! 💜";
+  speak("Hiiii! Mera naam Lumi hai! Main tumhari magical friend hoon! 🐉");
+  setTimeout(()=>go(1),1300);
+ }else{
+  message.textContent="Oops! Wrong password! Try again!";
+  speak("Hehehe! Password sahi enter karo! 💗");
+  lumiTalk();
+ }
+}
+
+function openGift(){
+ document.getElementById("giftMessage").innerHTML=
+ "<div class='emoji'>💝</div><h2>A Box Full of Happiness!</h2><p>Sending you lots of beautiful birthday wishes!</p>";
+ speak("Surprise! I brought you a gift!");
+}
+
+function celebrate(){
+ document.getElementById("cakeMessage").innerHTML=
+ "<h2>🎉 Yayyy! Happy Birthday! 🎉</h2>";
+ speak("Yayyy! Let's celebrate Allu!");
+ for(let i=0;i<45;i++){
+  const star=document.createElement("div");
+  star.textContent=["✨","🎊","💜","⭐","🎉"][Math.floor(Math.random()*5)];
+  star.style.position="fixed";
+  star.style.left=Math.random()*100+"vw";
+  star.style.top="-30px";
+  star.style.fontSize="25px";
+  star.style.zIndex="2000";
+  star.style.transition="top 3s linear";
+  document.body.appendChild(star);
+  setTimeout(()=>star.style.top="110vh",30);
+  setTimeout(()=>star.remove(),3200);
+ }
+ lumi.classList.remove("floating");
+ lumi.classList.add("jumping");
+ setTimeout(()=>{
+  lumi.classList.remove("jumping");
+  lumi.classList.add("floating");
+ },700);
+}
+
+function addPhotos(event){
+ const gallery=document.getElementById("gallery");
+ [...event.target.files].forEach(file=>{
+  const img=document.createElement("img");
+  img.src=URL.createObjectURL(file);
+  gallery.appendChild(img);
+ });
+}
+
+function updateCountdown(){
+ const target=new Date("January 22, 2027 00:00:00").getTime();
+ const diff=target-Date.now();
+ const el=document.getElementById("countdown");
+ if(diff<=0){el.textContent="It's Allu's Birthday! 🎂";return}
+ const days=Math.floor(diff/86400000);
+ const hours=Math.floor(diff/3600000)%24;
+ const mins=Math.floor(diff/60000)%60;
+ const secs=Math.floor(diff/1000)%60;
+ el.textContent=`${days} Days • ${hours} Hours • ${mins} Minutes • ${secs} Seconds`;
+}
+
+makeMagic();
+setSceneArt(0);
+updateCountdown();
+setInterval(updateCountdown,1000);
+speak(pageDialogues[0]);
+</script>
+</body>
+</html>
